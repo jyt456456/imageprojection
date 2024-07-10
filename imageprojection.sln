@@ -7,18 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "imageprojection", "imagepro
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
-		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{01633307-2510-4118-BC38-C5DFF7323FAE}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{01633307-2510-4118-BC38-C5DFF7323FAE}.Debug|Any CPU.Build.0 = Debug|x64
 		{01633307-2510-4118-BC38-C5DFF7323FAE}.Debug|x64.ActiveCfg = Debug|x64
 		{01633307-2510-4118-BC38-C5DFF7323FAE}.Debug|x64.Build.0 = Debug|x64
-		{01633307-2510-4118-BC38-C5DFF7323FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{01633307-2510-4118-BC38-C5DFF7323FAE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{01633307-2510-4118-BC38-C5DFF7323FAE}.Release|x64.ActiveCfg = Release|x64
 		{01633307-2510-4118-BC38-C5DFF7323FAE}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
