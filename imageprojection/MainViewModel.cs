@@ -140,65 +140,43 @@ namespace imageprojection
 
         public void PerformProjection(Mat binaryImage)
         {
-            // 이미지 크기 가져오기
-            int width = binaryImage.Width;
-            int height = binaryImage.Height;
-
-            List<int> verticalProjection;
-            List<int> HorizonProjection;
-
-            HorizonProjection = CalculateHorizontalProjection(binaryImage);
-
-            Mat ResultImagemat = ModifyHorizon(binaryImage.Clone(), HorizonProjection);
-
+            List<int> meanPRojection;
+            meanPRojection = CalHorizon(binaryImage);
+            Mat ResultImagemat = ModifyHorizon(binaryImage.Clone(), meanPRojection);
             ResultImagemat.Save("D:\\modify.bmp");
-            HorizonProjection = CalculateHorizontalProjection(ResultImagemat);
-            DrawProjectionGraph(HorizonProjection);
+            meanPRojection = CalHorizon(ResultImagemat);
+
+            DrawProjectionGraph(meanPRojection);
 
         }
 
         private void DrawProjectionGraph(List<int> projectionData)
         {
             ResultChartData.Clear();
+            var tempPeakData = new ObservableRangeCollection<PointF>();
             for (int i = 0; i < projectionData.Count; ++i)
             {
-                ResultChartData.Add(new PointF(projectionData.Count - Convert.ToSingle(i), Convert.ToSingle(projectionData[i])));
+                tempPeakData.Add(new PointF(i, Convert.ToSingle(projectionData[i])));
             }
+
+            ResultChartData = tempPeakData;
 
             OnPropertyChanged("ResultChartData");
         }
 
-        private List<int> CalculateVerticalProjection(Mat grayImage)
+        private List<int> CalHorizon(Mat grayImage)
         {
-            int width = grayImage.Width;
-            int height = grayImage.Height;
-
-            int[] projection = new int[width];
-
-            for (int x = 0; x < width; x++)
+            Image<Gray, byte> image = grayImage.ToImage<Gray, byte>();
+            int[] projection = new int[grayImage.Height];
+            // Iterate through each block
+            List<int> result;
+            for (int y = 0; y < grayImage.Rows; ++y)
             {
-                for (int y = 0; y < height; y++)
-                {
-                    projection[x] += GetValue(grayImage, y, x);
-                }
-            }
-            List<int> result = projection.ToList();
-            return result;
-        }
+                Rectangle roi = new Rectangle(0, y, grayImage.Width,1);
 
-        private List<int> CalculateHorizontalProjection(Mat grayImage)
-        {
-            int width = grayImage.Width;
-            int height = grayImage.Height;
-            int[] projection = new int[height];
-            List<int> result = new List<int>();
-            for (int y = 0; y < height; ++y)
-            {
-                for (int x = 0; x < width; ++x)
-                {
-                    projection[y] += GetValue(grayImage, y, x);
-                }
-                projection[y] /=  width;
+                MCvScalar mean1 = CvInvoke.Mean(image.GetSubRect(roi));
+
+                projection[y] = (int)mean1.V0;
             }
             result = projection.ToList();
 
@@ -228,20 +206,15 @@ namespace imageprojection
             int height = grayImage.Height;
 
             // 가로 방향 프로젝션 적용
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < height; ++y)
             {
                 //double scale = horizontalProjection[y]  128;
-                int a = 0;
-                a =  128 - horizontalProjection[y];
+                int value = 0;
+                value = 128 - horizontalProjection[y];
 
-                for (int x = 0; x < width; x++)
+                for (int x = 0; x < width; ++x)
                 {
-                    //  grayImage.Data[y, x, 0] = (byte)(grayImage.Data[y, x, 0] * scale);
-                    if((GetValue(grayImage, y, x) + a) >= 255)
-                    {
-                        int sdsd = 0;
-                    }
-                    SetValue(grayImage, y, x, (byte)(GetValue(grayImage, y, x) + a));
+                    SetValue(grayImage, y, x, (byte)(GetValue(grayImage, y, x) + value));
                 }
             }
 
